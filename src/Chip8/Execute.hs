@@ -5,10 +5,11 @@ module Chip8.Execute
   , ExecuteResult (..)
   ) where
 
-import Data.Word (Word16)
+import Data.Word (Word8, Word16)
 import Data.Bits (shiftL, shiftR, (.&.), (.|.), xor)
 import Data.IORef (newIORef, readIORef, writeIORef)
 import Control.Monad (forM_, when)
+import System.Random (randomIO)
 
 import Chip8.Instruction
 import Chip8.Types (CpuState (..), displayWidth, displayHeight)
@@ -129,9 +130,8 @@ execute instr cpu mem getPeripherals = case instr of
     in pure $ Right $ result (cpu { cpuPc = addr + v0 }) mem
 
   RND vx mask -> do
-    -- RND は外部ランダム値が必要 — ここでは簡易的に DT を seed として使う
-    -- 実際のフロントエンドでは IO ランダムを使う
-    let val = (cpuDelayTimer cpu `xor` fromIntegral (cpuPc cpu)) .&. mask
+    randByte <- randomIO :: IO Word8
+    let val = randByte .&. mask
         cpu' = setRegister cpu vx val
     pure $ Right $ result (advancePc cpu') mem
 
