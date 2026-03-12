@@ -1,0 +1,65 @@
+cabal-version:      3.12
+name:               chip8-hs
+version:            0.1.0.0
+synopsis:           CHIP-8 emulator in Haskell
+license:            MIT
+license-file:       LICENSE
+author:             okayus
+maintainer:         toshiaki.mukai.9981@gmail.com
+category:           Emulation
+build-type:         Simple
+extra-doc-files:    CHANGELOG.md
+
+common warnings
+    ghc-options: -Wall -Wcompat -Wincomplete-uni-patterns -Wincomplete-record-updates -Wpartial-fields -Wredundant-constraints
+
+library
+    import:           warnings
+    exposed-modules:
+        Chip8.Types
+        Chip8.Font
+        Chip8.Instruction
+        Chip8.Memory
+        Chip8.Cpu
+        Chip8.Decode
+        Chip8.Execute
+        Chip8.Emulator
+        Chip8.Peripherals
+    build-depends:
+        base        ^>=4.18.3.0,
+        vector      ^>=0.13,
+        bytestring  ^>=0.11,
+        random      ^>=1.2,
+        mtl         ^>=2.3
+    hs-source-dirs:   src
+    default-language: GHC2021
+
+test-suite chip8-hs-test
+    import:           warnings
+    type:             exitcode-stdio-1.0
+    main-is:          Main.hs
+    other-modules:
+        Test.Chip8.Types
+        Test.Chip8.Decode
+        Test.Chip8.Memory
+        Test.Chip8.Execute
+        Test.Chip8.Emulator
+    build-depends:
+        base        ^>=4.18.3.0,
+        chip8-hs,
+        tasty       ^>=1.5,
+        tasty-hunit ^>=0.10,
+        vector      ^>=0.13,
+        bytestring  ^>=0.11
+    hs-source-dirs:   test
+    default-language: GHC2021
+
+executable chip8-hs
+    import:           warnings
+    main-is:          Main.hs
+    build-depends:
+        base        ^>=4.18.3.0,
+        chip8-hs,
+        bytestring  ^>=0.11
+    hs-source-dirs:   app
+    default-language: GHC2021
